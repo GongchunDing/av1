@@ -493,10 +493,11 @@ extern "C" int av1_openvino_restore_cnn_tflite(
     { InferenceEngine::PluginConfigParams::KEY_PERF_COUNT,
       InferenceEngine::PluginConfigParams::YES }
   };
-  //Load the model to the device 
+  InferenceEngine::Core ie;
+  vector<string> availableDevices = ie.GetAvailableDevices();
   
+  // OpenVINO 仅支持英特尔 GPU 设备
   executable_network = core.LoadNetwork(network, "CPU", config);
-  
   //Create an infer request 
   
   auto infer_request = executable_network.CreateInferRequest();

@@ -4985,17 +4985,16 @@ static void loopfilter_frame(AV1_COMP *cpi, AV1_COMMON *cm) {
     /*TF_Init_Models(2, 53);
     addition_handle_frame_CRLC(cpi->source, cm);*/
 
-
     av1_openvino(cm, cpi->num_workers, cpi->source, AOM_PLANE_Y,
                  num_planes - 3);
     av1_restore_cnn_guided_tflite(cm, cpi->num_workers, cpi->source,
                                   AOM_PLANE_U, num_planes - 1);
 #else
-    //av1_restore_cnn_tflite(cm, cpi->num_workers, AOM_PLANE_Y, num_planes - 1);
+    av1_restore_cnn_tflite(cm, cpi->num_workers, AOM_PLANE_Y, num_planes - 1);
 
-    TF_Init_Models(2, 53);
+    /*TF_Init_Models(2, 53);
     addition_handle_frame_dgc(cpi->source, cm);
-    av1_restore_cnn_tflite(cm, cpi->num_workers, AOM_PLANE_U, num_planes - 1);
+    av1_restore_cnn_tflite(cm, cpi->num_workers, AOM_PLANE_U, num_planes - 1);*/
 #endif  // CONFIG_CNN_CRLC_GUIDED
 
     // Calculate errors after applying cnn from source.
@@ -5644,7 +5643,7 @@ static int encode_with_recode_loop(AV1_COMP *cpi, size_t *size, uint8_t *dest) {
   return AOM_CODEC_OK;
 }
 
-#define DUMP_RECON_FRAMES 0
+#define DUMP_RECON_FRAMES 1
 
 #if DUMP_RECON_FRAMES == 1
 // NOTE(zoeliu): For debug - Output the filtered reconstructed video.
@@ -5687,7 +5686,7 @@ static void dump_filtered_recon_frames(AV1_COMP *cpi) {
   }
 
   int h;
-  char file_name[256] = "/tmp/enc_filtered_recon.yuv";
+  char file_name[256] = "tmp/enc_filtered_recon.yuv";
   FILE *f_recon = NULL;
 
   if (current_frame->frame_number == 0) {
